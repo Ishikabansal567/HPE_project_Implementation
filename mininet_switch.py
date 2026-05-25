@@ -94,4 +94,4 @@ CLI(net)
 # Stop networ
 net.stop()
 
-print("\n=== NETWORK STOPPED ===")
+print("\n--NETWORK STOPPED --")
