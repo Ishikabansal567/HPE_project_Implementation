@@ -22,6 +22,7 @@ def run():
         )
         time.sleep(0.2)
 
+        print("\n---------------")
     print("flapping mac")
     ports = (1,2,3,1,4,2)
     for p in ports:
