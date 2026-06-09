@@ -89,35 +89,62 @@ sniffer_thread = threading.Thread(
 sniffer_thread.start()
 
 time.sleep(2)
-
 # -----------------------------
-# Intra Group Traffic
+# Scenario 1: Stable Host
 # -----------------------------
-print("\nINTRA GROUP TRAFFIC")
-print("-------------------")
+print("\nSCENARIO 1 : STABLE HOST")
+print("------------------------")
 
+# h1 continuously talks to h2
 h1.cmd(
-    f"ping -c 10 {h2.IP()}"
+    f"ping -i 1 {h2.IP()} > /dev/null 2>&1 &"
 )
 
-time.sleep(2)
+print("Started continuous traffic:")
+print(f"{h1.name} --> {h2.name}")
 
-# -----------------------------
-# Inter Group Traffic
-# -----------------------------
-print("\nINTER GROUP TRAFFIC")
-print("-------------------")
+time.sleep(20)
+
+print("\nMAC TABLE AFTER STABLE TRAFFIC")
+
+dragon.show_mac_table()
+print("\nEXPERIMENT 2 : HIGH TRAFFIC")
+print("---------------------------")
 
 h1.cmd(
-    f"ping -c 20 {h4.IP()}"
+    f"ping -f {h2.IP()} > /dev/null 2>&1 &"
+)
+
+print(f"{h1.name} flooding {h2.name}")
+
+time.sleep(10)
+
+print("\nMAC TABLE AFTER HIGH TRAFFIC")
+dragon.show_mac_table()
+
+h1.cmd("pkill ping")
+
+
+# -----------------------------
+# Scenario 2: New Host Appears
+# -----------------------------
+print("\nSCENARIO 2 : NEW HOST")
+print("---------------------")
+
+# h4 was silent until now
+print(f"{h4.name} starts communicating")
+
+h4.cmd(
+    f"ping -c 5 {h2.IP()}"
 )
 
 time.sleep(5)
 
+
 # -----------------------------
-# Results
+# Final Results
 # -----------------------------
-print("\nUPDATED MAC TABLE")
+print("\nFINAL MAC TABLE")
 dragon.show_mac_table()
 
 # -----------------------------
